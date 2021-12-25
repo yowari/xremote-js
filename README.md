@@ -1,5 +1,7 @@
 # XRemote JS
 
+[![codecov](https://codecov.io/gh/yowari/xremote-js/branch/main/graph/badge.svg)](https://codecov.io/gh/yowari/xremote-js)
+
 XRemote is a web implementation for the Xbox One/Series streaming protocol.
 
 The package provides API to access and collect stream data of your Xbox console.
