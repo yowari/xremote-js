@@ -1,6 +1,6 @@
 # XRemote JS
 
-![CI](https://github.com/yowari/xremote-js/workflows/integration/badge.svg)
+![integration](https://github.com/yowari/xremote-js/workflows/integration/badge.svg)
 [![codecov](https://codecov.io/gh/yowari/xremote-js/branch/main/graph/badge.svg)](https://codecov.io/gh/yowari/xremote-js)
 
 XRemote is a web implementation for the Xbox One/Series streaming protocol.
