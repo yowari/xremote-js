@@ -18,6 +18,8 @@ const webrtcDataChannelConfiguration: RTCDataChannelInit = {
   protocol: '1.0'
 };
 
+const MAX_INPUT_SEQUENCE_NUMBER = 4294967295;
+
 export class InputChannel extends AbstractChannel {
   private inputSequenceNumber = 0;
   private hasReceivedServerMetadata = false;
@@ -66,7 +68,7 @@ export class InputChannel extends AbstractChannel {
   }
 
   private sendRequestMetadata(): void {
-    this.inputSequenceNumber = (this.inputSequenceNumber >= 4294967295) ? 0 : this.inputSequenceNumber + 1;
+    this.inputSequenceNumber = (this.inputSequenceNumber >= MAX_INPUT_SEQUENCE_NUMBER) ? 0 : this.inputSequenceNumber + 1;
 
     const dataView = new DataView((new Uint8Array(REPORT_HEADER_SIZE + 1)).buffer);
 
@@ -86,7 +88,7 @@ export class InputChannel extends AbstractChannel {
   }
 
   private generateInputReport(): ArrayBuffer {
-    this.inputSequenceNumber = (this.inputSequenceNumber >= 4294967295) ? 0 : this.inputSequenceNumber + 1;
+    this.inputSequenceNumber = (this.inputSequenceNumber >= MAX_INPUT_SEQUENCE_NUMBER) ? 0 : this.inputSequenceNumber + 1;
 
     this.frameMetadataManager.reportPacketTime();
 

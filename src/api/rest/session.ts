@@ -108,12 +108,12 @@ export async function sendSDP(token: string, sessionId: string, sdp: string): Pr
     "messageType": "offer",
     "sdp": sdp,
     "configuration": {
-      // "containerizeAudio": false,
+      "containerizeAudio": false,
       // "containerizeVideo": true,
       // "requestedH264Profile": 2,
       "chatConfiguration": {
         "bytesPerSample": 2,
-        "expectedClipDurationMs": 100,
+        "expectedClipDurationMs": 20,
         "format": {
           "codec": "opus",
           "container": "webm"
@@ -131,7 +131,7 @@ export async function sendSDP(token: string, sessionId: string, sdp: string): Pr
       },
       "control": {
         "minVersion": 1,
-        "maxVersion": 1
+        "maxVersion": 2
       },
       "input": {
         "minVersion": 1,
