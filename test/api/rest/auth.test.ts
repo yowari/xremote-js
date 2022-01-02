@@ -1,13 +1,22 @@
 import { getGSToken } from '../../../src/api/rest/auth';
-import { createMockFetch } from '../../test-utils/fetch';
 
 describe('getGSToken', () => {
   const gsToken = 'GSTOKEN_TEST';
   const oauthToken = 'OAUTH_TOKEN_TEST';
 
-  test('should retrive the GSToken', async () => {
-    const mockFetch = jest.fn().mockImplementation(createMockFetch({ gsToken }));
-    global.fetch = mockFetch;
+  beforeEach(() => {
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    (global.fetch as jest.Mock).mockRestore();
+  });
+
+  it('should retrive the GSToken', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockReturnValue({ gsToken })
+    });
 
     const gsTokenResult = await getGSToken(oauthToken);
 
@@ -24,9 +33,6 @@ describe('getGSToken', () => {
       })
     });
     expect(gsTokenResult).toBe(gsToken);
-
-    mockFetch.mockClear();
-    delete global.fetch;
   });
 
 });

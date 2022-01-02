@@ -1,7 +1,6 @@
 import { Console } from '../../../src/api/models/console';
 import { List } from '../../../src/api/models/list';
 import { getConsoles } from '../../../src/api/rest/console';
-import { createMockFetch } from '../../test-utils/fetch';
 
 describe('getConsoles', () => {
   const token = 'GSTOKEN_TEST';
@@ -22,9 +21,19 @@ describe('getConsoles', () => {
     ]
   };
 
-  test('should retrive the console list', async () => {
-    const mockFetch = jest.fn().mockImplementation(createMockFetch(consoleList));
-    global.fetch = mockFetch;
+  beforeEach(() => {
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    (global.fetch as jest.Mock).mockReset();
+  });
+
+  it('should retrive the console list', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockReturnValue(consoleList)
+    });
 
     const consoleListResult = await getConsoles(token);
 
@@ -38,9 +47,6 @@ describe('getConsoles', () => {
       }
     });
     expect(consoleListResult).toBe(consoleList);
-
-    mockFetch.mockClear();
-    delete global.fetch;
   });
 
 });

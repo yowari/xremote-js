@@ -1,7 +1,7 @@
 import { execWithRetry } from '../../src/utils/task';
 
 describe('execWithRetry', () => {
-  test('should execute the function and return what have been returned by the function when succeed', async () => {
+  it('should execute the function and return what have been returned by the function when succeed', async () => {
     const resolvedValue = 'Resolved Value';
 
     const response = await execWithRetry({
@@ -14,7 +14,7 @@ describe('execWithRetry', () => {
     expect(response).toBe(resolvedValue);
   });
 
-  test('should retry when function throw error', async () => {
+  it('should retry when function throw error', async () => {
     const retries = 5;
     const taskFn = jest.fn().mockRejectedValue(null);
 
