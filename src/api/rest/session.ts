@@ -46,7 +46,7 @@ export function createSession(token: string, serverId: string): Promise<Session>
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token
     },
     body: JSON.stringify(body)
   })
@@ -68,7 +68,7 @@ export function getSessionState(token: string, sessionId: string): Promise<Sessi
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token
     }
   })
   .then(handleError)
@@ -89,7 +89,7 @@ export function getSessionConfiguration(token: string, sessionId: string): Promi
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token
     }
   })
   .then(handleError)
@@ -154,7 +154,7 @@ export async function sendSDP(token: string, sessionId: string, sdp: string): Pr
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token
     },
     body: JSON.stringify(body)
   })
@@ -175,7 +175,7 @@ export async function getSDPState(token: string, sessionId: string): Promise<SDP
       cache: 'no-cache',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        [getEnv().authorizationHeader]: 'Bearer ' + token
       }
     })
     .then(handleError)
@@ -208,7 +208,7 @@ export async function sendICE(token: string, sessionId: string, ice: string): Pr
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token
     },
     body: JSON.stringify(body)
   })
@@ -229,7 +229,7 @@ export async function getICEState(token: string, sessionId: string): Promise<ICE
       cache: 'no-cache',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        [getEnv().authorizationHeader]: 'Bearer ' + token
       }
     })
     .then(handleError)
@@ -250,7 +250,7 @@ export async function sendKeepAlive(token: string, sessionId: string): Promise<v
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token
     }
   })
   .then(handleError);

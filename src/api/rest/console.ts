@@ -16,7 +16,7 @@ export async function getConsoles(token: string): Promise<List<Console>> {
       cache: 'no-cache',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        [getEnv().authorizationHeader]: 'Bearer ' + token
       }
     })
     .then(handleError)
