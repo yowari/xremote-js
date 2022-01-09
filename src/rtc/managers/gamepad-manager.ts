@@ -81,7 +81,7 @@ export class GamepadManager {
     this.gamepadStates = [];
   }
 
-  private pushState(gamepad: GamepadFrame): void {
+  pushState(gamepad: GamepadFrame): void {
     // TODO: for some reason this is not how it works
     // this.gamepadStates.push({ ...gamepad });
     this.gamepadStates = [gamepad];
