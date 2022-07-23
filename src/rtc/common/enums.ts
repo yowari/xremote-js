@@ -15,3 +15,11 @@ export enum Buttons {
   LeftThumb = 16384,
   RightThumb = 32768
 }
+
+export enum SystemUiType {
+  ShowVirtualKeyboard = 10,
+  ShowMessageDialog = 19,
+  ShowPurchase = 27,
+  ShowApplication = 31,
+  ShowTimerExtension = 32
+}

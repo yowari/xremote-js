@@ -20,6 +20,7 @@ import {
 import { execWithRetry } from './utils/task';
 import { SessionStateType } from './api/models/session-state';
 import { XboxError } from './api/models/error-details';
+import { CorrelationVectorGenerator } from './utils/crypto';
 
 export class ChannelToken<T> {
   constructor(public channelName: string) {}
@@ -62,6 +63,7 @@ export class Client extends EventTarget {
   private gamepadManager = new GamepadManager();
   private iceCandidates: RTCIceCandidate[] = [];
   private keepAliveIntervalId = 0;
+  private cv = new CorrelationVectorGenerator();
   gstoken: string = '';
 
   /**
@@ -280,7 +282,7 @@ export class Client extends EventTarget {
     this.channels['audio'] = new AudioChannel(webrtcClient);
     this.channels['input'] = new InputChannel(webrtcClient, this.frameMetadataManager, this.gamepadManager);
     this.channels['control'] = new ControlChannel(webrtcClient);
-    this.channels['message'] = new MessageChannel(webrtcClient);
+    this.channels['message'] = new MessageChannel(webrtcClient, this.cv);
     this.channels['chat'] = new ChatChannel(webrtcClient);
   }
 

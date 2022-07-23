@@ -6,15 +6,6 @@ import { Session } from '../models/session';
 import { SessionConfiguration } from '../models/session-configuration';
 import { SessionState } from '../models/session-state';
 
-const i = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-function makeBase(): string {
-  let e = '';
-  for (let t = 0; t < 22; t++) {
-    e += i.charAt(Math.floor(Math.random() * i.length));
-  }
-  return e
-}
-
 /**
  * Create new game streaming session.
  *
