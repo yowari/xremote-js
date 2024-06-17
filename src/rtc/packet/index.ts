@@ -1,5 +1,3 @@
-export { parseFrameFragment } from './frame-fragment';
-export type { FrameFragment } from './frame-fragment';
 export {
   REPORT_HEADER_SIZE,
   serializeReportHeader

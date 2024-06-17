@@ -12,7 +12,7 @@ function makeBase(): string {
   for (let t = 0; t < 22; t++) {
     e += i.charAt(Math.floor(Math.random() * i.length));
   }
-  return e
+  return e;
 }
 
 /**
@@ -22,22 +22,27 @@ function makeBase(): string {
  * @param serverId Console's server ID
  * @returns Session
  */
-export function createSession(token: string, serverId: string): Promise<Session> {
+export function createSession(
+  token: string,
+  serverId: string
+): Promise<Session> {
   const body = {
-    "titleId": "",
-    "systemUpdateGroup": "",
-    "settings": {
-      "nanoVersion": "V3;RtcdcTransport.dll",
-      "enableTextToSpeech": false,
-      "highContrast": 0,
-      "locale": "en-US",
-      "useIceConnection": false,
-      "timezoneOffsetMinutes": 120,
-      "sdkType": "web",
-      "osName": "windows"
+    titleId: '',
+    systemUpdateGroup: '',
+    clientSessionId: '',
+    settings: {
+      nanoVersion: 'V3;WebrtcTransport.dll',
+      enableTextToSpeech: false,
+      enableOptionalDataCollection: false,
+      highContrast: 0,
+      locale: 'en-US',
+      useIceConnection: false,
+      timezoneOffsetMinutes: 120,
+      sdkType: 'web',
+      osName: 'windows',
     },
-    "serverId": serverId,
-    "fallbackRegionNames": []
+    serverId: serverId,
+    fallbackRegionNames: [],
   };
 
   return fetch(`${getEnv().baseUrl}/v5/sessions/home/play`, {
@@ -46,12 +51,12 @@ export function createSession(token: string, serverId: string): Promise<Session>
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      [getEnv().authorizationHeader]: 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token,
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   })
-  .then(handleError)
-  .then((response) => response.json());
+    .then(handleError)
+    .then((response) => response.json());
 }
 
 /**
@@ -61,18 +66,21 @@ export function createSession(token: string, serverId: string): Promise<Session>
  * @param sessionId Session ID
  * @returns Session's State
  */
-export function getSessionState(token: string, sessionId: string): Promise<SessionState> {
+export function getSessionState(
+  token: string,
+  sessionId: string
+): Promise<SessionState> {
   return fetch(`${getEnv().baseUrl}/v5/sessions/home/${sessionId}/state`, {
     method: 'GET',
     mode: 'cors',
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      [getEnv().authorizationHeader]: 'Bearer ' + token
-    }
+      [getEnv().authorizationHeader]: 'Bearer ' + token,
+    },
   })
-  .then(handleError)
-  .then((response) => response.json());
+    .then(handleError)
+    .then((response) => response.json());
 }
 
 /**
@@ -82,18 +90,24 @@ export function getSessionState(token: string, sessionId: string): Promise<Sessi
  * @param sessionId Session ID
  * @returns Session Configuration
  */
-export function getSessionConfiguration(token: string, sessionId: string): Promise<SessionConfiguration> {
-  return fetch(`${getEnv().baseUrl}/v5/sessions/home/${sessionId}/configuration`, {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
-    headers: {
-      'Content-Type': 'application/json',
-      [getEnv().authorizationHeader]: 'Bearer ' + token
+export function getSessionConfiguration(
+  token: string,
+  sessionId: string
+): Promise<SessionConfiguration> {
+  return fetch(
+    `${getEnv().baseUrl}/v5/sessions/home/${sessionId}/configuration`,
+    {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+        [getEnv().authorizationHeader]: 'Bearer ' + token,
+      },
     }
-  })
-  .then(handleError)
-  .then((response) => response.json());
+  )
+    .then(handleError)
+    .then((response) => response.json());
 }
 
 /**
@@ -103,49 +117,45 @@ export function getSessionConfiguration(token: string, sessionId: string): Promi
  * @param sessionId Session ID
  * @param sdp Session Description Protocol (SDP) Profile
  */
-export async function sendSDP(token: string, sessionId: string, sdp: string): Promise<void> {
+export async function sendSDP(
+  token: string,
+  sessionId: string,
+  sdp: string
+): Promise<void> {
   const body = {
-    "messageType": "offer",
-    "sdp": sdp,
-    "configuration": {
-      "containerizeAudio": false,
+    messageType: 'offer',
+    sdp: sdp,
+    configuration: {
+      containerizeAudio: false,
       // "containerizeVideo": true,
       // "requestedH264Profile": 2,
-      "chatConfiguration": {
-        "bytesPerSample": 2,
-        "expectedClipDurationMs": 20,
-        "format": {
-          "codec": "opus",
-          "container": "webm"
+      chatConfiguration: {
+        bytesPerSample: 2,
+        expectedClipDurationMs: 20,
+        format: {
+          codec: 'opus',
+          container: 'webm',
         },
-        "numChannels": 1,
-        "sampleFrequencyHz": 24000
+        numChannels: 1,
+        sampleFrequencyHz: 24000,
       },
-      "audio": {
-        "minVersion": 1,
-        "maxVersion": 1
+      chat: {
+        minVersion: 1,
+        maxVersion: 1,
       },
-      "chat": {
-        "minVersion": 1,
-        "maxVersion": 1
+      control: {
+        minVersion: 1,
+        maxVersion: 3,
       },
-      "control": {
-        "minVersion": 1,
-        "maxVersion": 2
+      input: {
+        minVersion: 1,
+        maxVersion: 8,
       },
-      "input": {
-        "minVersion": 1,
-        "maxVersion": 4
+      message: {
+        minVersion: 1,
+        maxVersion: 1,
       },
-      "message": {
-        "minVersion": 1,
-        "maxVersion": 1
-      },
-      "video": {
-        "minVersion": 1,
-        "maxVersion": 2
-      }
-    }
+    },
   };
 
   await fetch(`${getEnv().baseUrl}/v5/sessions/home/${sessionId}/sdp`, {
@@ -154,11 +164,10 @@ export async function sendSDP(token: string, sessionId: string, sdp: string): Pr
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      [getEnv().authorizationHeader]: 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token,
     },
-    body: JSON.stringify(body)
-  })
-  .then(handleError);
+    body: JSON.stringify(body),
+  }).then(handleError);
 }
 
 /**
@@ -168,16 +177,19 @@ export async function sendSDP(token: string, sessionId: string, sdp: string): Pr
  * @param sessionId Session ID
  * @returns Session Description Protocol (SDP) State
  */
-export async function getSDPState(token: string, sessionId: string): Promise<SDPState> {
+export async function getSDPState(
+  token: string,
+  sessionId: string
+): Promise<SDPState> {
   return fetch(`${getEnv().baseUrl}/v5/sessions/home/${sessionId}/sdp`, {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json',
-        [getEnv().authorizationHeader]: 'Bearer ' + token
-      }
-    })
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json',
+      [getEnv().authorizationHeader]: 'Bearer ' + token,
+    },
+  })
     .then(handleError)
     .then((response) => response.text())
     .then((responseText) => {
@@ -196,10 +208,14 @@ export async function getSDPState(token: string, sessionId: string): Promise<SDP
  * @param sessionId Session ID
  * @param ice Interactive Connectivity Establishment (ICE) candidate
  */
-export async function sendICE(token: string, sessionId: string, ice: string): Promise<void> {
+export async function sendICE(
+  token: string,
+  sessionId: string,
+  ice: string
+): Promise<void> {
   const body = {
-    "messageType": "iceCandidate",
-    "candidate": ice
+    messageType: 'iceCandidate',
+    candidate: ice,
   };
 
   await fetch(`${getEnv().baseUrl}/v5/sessions/home/${sessionId}/ice`, {
@@ -208,11 +224,10 @@ export async function sendICE(token: string, sessionId: string, ice: string): Pr
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      [getEnv().authorizationHeader]: 'Bearer ' + token
+      [getEnv().authorizationHeader]: 'Bearer ' + token,
     },
-    body: JSON.stringify(body)
-  })
-  .then(handleError);
+    body: JSON.stringify(body),
+  }).then(handleError);
 }
 
 /**
@@ -222,16 +237,19 @@ export async function sendICE(token: string, sessionId: string, ice: string): Pr
  * @param sessionId Session ID
  * @returns Interactive Connectivity Establishment (ICE) State
  */
-export async function getICEState(token: string, sessionId: string): Promise<ICEState> {
+export async function getICEState(
+  token: string,
+  sessionId: string
+): Promise<ICEState> {
   return fetch(`${getEnv().baseUrl}/v5/sessions/home/${sessionId}/ice`, {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json',
-        [getEnv().authorizationHeader]: 'Bearer ' + token
-      }
-    })
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json',
+      [getEnv().authorizationHeader]: 'Bearer ' + token,
+    },
+  })
     .then(handleError)
     .then((response) => response.text())
     .then((responseText) => {
@@ -243,15 +261,17 @@ export async function getICEState(token: string, sessionId: string): Promise<ICE
     });
 }
 
-export async function sendKeepAlive(token: string, sessionId: string): Promise<void> {
+export async function sendKeepAlive(
+  token: string,
+  sessionId: string
+): Promise<void> {
   await fetch(`${getEnv().baseUrl}/v5/sessions/home/${sessionId}/keepalive`, {
     method: 'POST',
     mode: 'cors',
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
-      [getEnv().authorizationHeader]: 'Bearer ' + token
-    }
-  })
-  .then(handleError);
+      [getEnv().authorizationHeader]: 'Bearer ' + token,
+    },
+  }).then(handleError);
 }

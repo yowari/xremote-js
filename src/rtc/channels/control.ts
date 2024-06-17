@@ -1,7 +1,6 @@
 import { AbstractChannel } from './abstract-channel';
 
 const webrtcDataChannelConfiguration: RTCDataChannelInit = {
-  id: 4,
   protocol: 'controlV1'
 };
 
@@ -23,9 +22,12 @@ export class ControlChannel extends AbstractChannel {
     const message = JSON.parse(event.data);
     if (message.messageType === 'videoChannelConfig') {
       console.log(message);
-      this.sendAuthorizationRequest();
-      this.senndGamepadChanged();
     }
+  }
+
+  start(): void {
+    this.sendAuthorizationRequest();
+    this.senndGamepadChanged();
   }
 
   private sendAuthorizationRequest(): void {

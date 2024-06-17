@@ -6,12 +6,10 @@ import { getGSToken } from './api/rest/auth';
 import * as sessionService from './api/rest/session';
 import {
   AbstractChannel,
-  AudioChannel,
   ChatChannel,
   ControlChannel,
   InputChannel,
   MessageChannel,
-  VideoChannel
 } from './rtc/channels';
 import {
   FrameMetadataManager,
@@ -25,8 +23,6 @@ export class ChannelToken<T> {
   constructor(public channelName: string) {}
 }
 
-export const VIDEO_CHANNEL = new ChannelToken<VideoChannel>('video');
-export const AUDIO_CHANNEL = new ChannelToken<AudioChannel>('audio');
 export const INPUT_CHANNEL = new ChannelToken<InputChannel>('input');
 export const CONTROL_CHANNEL = new ChannelToken<ControlChannel>('control');
 export const MESSAGE_CHANNEL = new ChannelToken<MessageChannel>('message');
@@ -49,6 +45,18 @@ export class AuthError extends Error {
 export class StreamStateChangeEvent extends Event {
   constructor(public state: StreamState) {
     super('streamstatechange');
+  }
+}
+
+export class VideoTrackEvent extends Event {
+  constructor(public track: MediaStream) {
+    super('videotrack');
+  }
+}
+
+export class AudioTrackEvent extends Event {
+  constructor(public track: MediaStream) {
+    super('audiotrack');
   }
 }
 
@@ -147,12 +155,25 @@ export class Client extends EventTarget {
     this.handleICEEvents(this.webrtcClient);
     this.openDataChannels(this.webrtcClient);
 
+    this.webrtcClient.ontrack = (event: RTCTrackEvent) => {
+      if(event.track.kind === 'video'){
+        this.dispatchEvent(new VideoTrackEvent(event.streams[0]));
+      } else if(event.track.kind === 'audio'){
+        this.dispatchEvent(new AudioTrackEvent(event.streams[0]));
+      } else {
+        console.log(`Unknown track "${event.track.kind}"`);
+      }
+    }
+
     this.webrtcClient.addEventListener('connectionstatechange', (event) => {
       console.log(event);
     });
 
     // create offer
-    const offer = await this.webrtcClient.createOffer();
+    const offer = await this.webrtcClient.createOffer({
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true,
+    });
     console.log(offer);
 
     if (!offer.sdp) {
@@ -276,12 +297,18 @@ export class Client extends EventTarget {
   }
 
   private openDataChannels(webrtcClient: RTCPeerConnection): void {
-    this.channels['video'] = new VideoChannel(webrtcClient, this.frameMetadataManager);
-    this.channels['audio'] = new AudioChannel(webrtcClient);
-    this.channels['input'] = new InputChannel(webrtcClient, this.frameMetadataManager, this.gamepadManager);
-    this.channels['control'] = new ControlChannel(webrtcClient);
+    const inputChannel = new InputChannel(webrtcClient, this.frameMetadataManager, this.gamepadManager);
+    const controlChannel = new ControlChannel(webrtcClient);
+
+    this.channels['input'] = inputChannel;
+    this.channels['control'] = controlChannel;
     this.channels['message'] = new MessageChannel(webrtcClient);
     this.channels['chat'] = new ChatChannel(webrtcClient);
+
+    this.channels['message'].addEventListener('messageready', () => {
+      controlChannel.start();
+      inputChannel.start();
+    });
   }
 
   private checkAuth(): void {

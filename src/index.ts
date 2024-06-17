@@ -5,11 +5,11 @@ export {
   ChannelToken,
   StreamState,
   StreamStateChangeEvent,
-  AUDIO_CHANNEL,
+  VideoTrackEvent,
+  AudioTrackEvent,
   CHAT_CHANNEL,
   CONTROL_CHANNEL,
   INPUT_CHANNEL,
   MESSAGE_CHANNEL,
-  VIDEO_CHANNEL
 } from './client';
 export { getEnv, setEnv } from './env';

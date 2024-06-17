@@ -16,9 +16,9 @@ describe('getConsoles', () => {
         playPath: '/play/path',
         outOfHomeWarning: false,
         wirelessWarning: false,
-        isDevKit: false
-      }
-    ]
+        isDevKit: false,
+      },
+    ],
   };
 
   beforeEach(() => {
@@ -32,21 +32,23 @@ describe('getConsoles', () => {
   it('should retrive the console list', async () => {
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: jest.fn().mockReturnValue(consoleList)
+      json: jest.fn().mockReturnValue(consoleList),
     });
 
     const consoleListResult = await getConsoles(token);
 
-    expect(global.fetch).toHaveBeenCalledWith('https://uks.gssv-play-prodxhome.xboxlive.com/v6/servers/home', {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://uks.core.gssv-play-prodxhome.xboxlive.com/v6/servers/home',
+      {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
       }
-    });
+    );
     expect(consoleListResult).toBe(consoleList);
   });
-
 });
