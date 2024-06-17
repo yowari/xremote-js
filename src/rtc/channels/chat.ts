@@ -1,7 +1,6 @@
 import { AbstractChannel } from './abstract-channel';
 
 const webrtcDataChannelConfiguration: RTCDataChannelInit = {
-  id: 6,
   protocol: 'chatV1'
 };
 

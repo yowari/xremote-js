@@ -1,6 +1,6 @@
 export class HttpError extends Error {
   constructor(public response: Response) {
-    super('Error while fetching data: ' + response.statusText);
+    super(`request failed with error "${response.statusText}"`);
     this.name = 'HTTP Error';
   }
 }

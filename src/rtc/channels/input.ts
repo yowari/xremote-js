@@ -6,6 +6,7 @@ import {
 } from '../packet/report-header';
 import {
   METADATA_FRAME_SIZE,
+  MetadataFrame,
   serializeMetadataFrame
 } from '../packet/metadata-frame';
 import { FrameMetadataManager } from '../managers/frame-metadata-manager';
@@ -13,7 +14,6 @@ import { GAMEPAD_FRAME_SIZE, serializeGamepadFrame } from '../packet/gamepad-fra
 import { GamepadManager } from '../managers/gamepad-manager'
 
 const webrtcDataChannelConfiguration: RTCDataChannelInit = {
-  id: 3,
   ordered: true,
   protocol: '1.0'
 };
@@ -35,23 +35,17 @@ export class InputChannel extends AbstractChannel {
 
   onOpen(event: Event): void {
     super.onOpen(event);
-
-    this.sendRequestMetadata();
-
-    this.intervalId = window.setInterval(() => {
-      this.sendReport();
-    }, 16);
   }
 
   onMessage(event: MessageEvent): void {
     super.onMessage(event);
 
-    const dataView = new DataView(event.data)
+    const dataView = new DataView(event.data);
 
     const metadataResponse = {
-      packetType: dataView.getUint8(0), // 16 = ServerMetadata
-      serverHeight: dataView.getUint32(1, true),
-      serverWidth: dataView.getUint32(5, true)
+      packetType: dataView.getUint16(0, true), // 16 = ServerMetadata
+      serverHeight: dataView.getUint32(2, true),
+      serverWidth: dataView.getUint32(6, true)
     };
     this.hasReceivedServerMetadata = true;
 
@@ -67,6 +61,18 @@ export class InputChannel extends AbstractChannel {
     }
   }
 
+  start(): void {
+    this.sendRequestMetadata();
+
+    this.intervalId = window.setInterval(() => {
+      this.sendReport();
+    }, 16);
+  }
+
+  reportFrameMetadata(frameMetadata: MetadataFrame): void {
+    this.frameMetadataManager.reportFrame(frameMetadata);
+  }
+
   private sendRequestMetadata(): void {
     this.inputSequenceNumber = (this.inputSequenceNumber >= MAX_INPUT_SEQUENCE_NUMBER) ? 0 : this.inputSequenceNumber + 1;
 
@@ -76,6 +82,7 @@ export class InputChannel extends AbstractChannel {
       reportType: ReportType.ClientMetadata,
       inputSequenceNumber: this.inputSequenceNumber
     });
+    dataView.setUint8(14, 2); // maxTouchPoints
 
     this.webrtcDataChannel.send(dataView.buffer);
   }

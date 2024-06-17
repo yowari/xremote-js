@@ -5,10 +5,10 @@ export interface Env {
 }
 
 let _env: Env = {
-  baseUrl: 'https://uks.gssv-play-prodxhome.xboxlive.com',
+  baseUrl: 'https://uks.core.gssv-play-prodxhome.xboxlive.com',
   loginUrl: 'https://xhome.gssv-play-prod.xboxlive.com',
-  authorizationHeader: 'Authorization'
-}
+  authorizationHeader: 'Authorization',
+};
 
 export function getEnv(): Env {
   return _env;
